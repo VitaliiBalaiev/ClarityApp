@@ -1,3 +1,4 @@
+using ClarityApp.API.Configurations;
 using ClarityApp.API.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,11 +10,13 @@ public class DataContext : DbContext
     {
     }
 
-    public DbSet<AppUser> Users { get; set; }
+    public DbSet<User> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<AppUser>().ToTable("Users");
+        modelBuilder.ApplyConfiguration(new UserConfig());
+        modelBuilder.ApplyConfiguration(new ChatConfig());
+        
     }
     
 }

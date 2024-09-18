@@ -10,12 +10,18 @@ public class UserMessageConfig : IEntityTypeConfiguration<UserMessage>
     {
         builder.ToTable("UserMessages");
         
-        builder.HasKey(u => u.Id);
+        builder.HasKey(m => m.Id);
         
-        builder.Property(u => u.Id).IsRequired();
+        builder.Property(m => m.Id).IsRequired();
+        builder.Property(m => m.Content).IsRequired().HasMaxLength(1024);
+
+        builder.HasOne(m => m.Chat)
+            .WithMany(c => c.Messages);
         
-        builder.Property(u => u.Content).IsRequired().HasMaxLength(1024);
-        
+        builder.HasOne(m => m.Sender)
+            .WithMany(u => u.Messages)
+            .HasForeignKey(m => m.UserId);
+
 
     }
 }
