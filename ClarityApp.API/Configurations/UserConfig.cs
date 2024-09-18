@@ -9,18 +9,17 @@ public class UserConfig : IEntityTypeConfiguration<User>
     public void Configure(EntityTypeBuilder<User> builder)
     {
         builder.ToTable("AppUsers");
-        
+
+        // Primary key
         builder.HasKey(u => u.Id);
-        
+
+        // Properties
         builder.Property(u => u.Id).IsRequired();
         builder.Property(u => u.UserName).IsRequired().HasMaxLength(30);
 
-        builder.HasMany(u => u.Chats)
-            .WithMany(c => c.Users);
-        
-        builder.HasMany(u => u.ChatUsers)
-            .WithOne(cu => cu.User)
-            .HasForeignKey(cu => cu.UserId);
-
+        // Define one-to-many relationship with ChatUser (junction table)
+        builder.HasMany(u => u.ChatUsers)     // A user has many ChatUser entries
+            .WithOne(cu => cu.User)           // Each ChatUser has one User
+            .HasForeignKey(cu => cu.UserId);  // FK for User
     }
 }

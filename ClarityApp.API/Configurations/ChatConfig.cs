@@ -8,18 +8,18 @@ public class ChatConfig : IEntityTypeConfiguration<Chat>
 {
     public void Configure(EntityTypeBuilder<Chat> builder)
     {
-        builder.ToTable("Chat");
-        
+        builder.ToTable("Chats");
+
+        // Primary key
         builder.HasKey(c => c.Id);
-        
+
+        // Properties
         builder.Property(c => c.Id).IsRequired();
         builder.Property(c => c.ChatName).IsRequired();
-        
-        builder.HasMany(c => c.Users)
-            .WithMany(u => u.Chats);
-        
-        builder.HasMany(c => c.ChatUsers)
-            .WithOne(cu => cu.Chat)
-            .HasForeignKey(cu => cu.ChatId);
+
+        // Define one-to-many relationship with ChatUser (junction table)
+        builder.HasMany(c => c.ChatUsers)     // A chat has many ChatUser entries
+            .WithOne(cu => cu.Chat)           // Each ChatUser has one Chat
+            .HasForeignKey(cu => cu.ChatId);  // FK for Chat
     }
 }
