@@ -8,7 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ClarityApp.API.Controllers;
 
-public class AccountController : BaseApiController
+[ApiController] 
+[Route("api/[controller]")]
+
+public class AccountController : ControllerBase
 {
     [HttpPost("register")]
     public async Task<ActionResult<User>> Register(DataContext context, RegisterDTO registerDto)
@@ -30,7 +33,26 @@ public class AccountController : BaseApiController
         
         return user;
     }
+    
+    [HttpPost("login")]
+    public async Task<ActionResult<User>> Login(DataContext context, LoginDTO loginDto)
+    {
+        var user = await context.Users.SingleOrDefaultAsync(x => x.UserName == loginDto.Username);
+        
+        if (user == null) return Unauthorized("Username not found");
+        
+        using var hmac = new HMACSHA512(user.PasswordSalt);
+        
+        var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
 
+        if (computedHash.Where((t, i) => t != user.PasswordHash[i]).Any())
+        {
+            return Unauthorized("Invalid password");
+        }
+
+        return user;
+    }
+    
     private async Task<bool> UserExists(DataContext context, string username)
     {
         return await context.Users.AnyAsync(x => x.UserName == username.ToLower());

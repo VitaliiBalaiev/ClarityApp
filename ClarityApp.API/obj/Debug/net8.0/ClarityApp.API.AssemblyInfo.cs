@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ClarityApp.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a3f7233ab3846685bb99df99c84b56eabbd5d0dd")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+648b62e8478220c2dadcba8b4863673ac09a2b82")]
 [assembly: System.Reflection.AssemblyProductAttribute("ClarityApp.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ClarityApp.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

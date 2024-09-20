@@ -1,11 +1,7 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace ClarityApp.API.DTOs;
 
-public class RegisterDTO
+public class LoginDTO
 {
-    [Required]
     public string Username { get; set; }
-    [Required]
     public string Password { get; set; }
 }

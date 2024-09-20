@@ -11,6 +11,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 builder.Services.AddTransient<UserConfig>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+//builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins",
@@ -31,8 +32,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseCors("AllowAllOrigins");
 
 app.UseRouting();
 app.UseAuthorization();

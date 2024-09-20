@@ -5,7 +5,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ClarityApp.API.Controllers;
 
-public class UsersController : BaseApiController
+[ApiController] 
+[Route("api/[controller]")]
+
+public class UsersController : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<IEnumerable<User>>> GetUsers(DataContext context)
