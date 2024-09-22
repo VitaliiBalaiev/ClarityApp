@@ -1,5 +1,7 @@
 using ClarityApp.API.Configurations;
 using ClarityApp.API.Data;
+using ClarityApp.API.Interfaces;
+using ClarityApp.API.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,7 +13,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 builder.Services.AddTransient<UserConfig>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-//builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins",
