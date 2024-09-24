@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import {RouterLink, RouterOutlet} from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AccountService } from "../_services/account.service";
 import { HttpClientModule } from "@angular/common/http";
@@ -7,7 +7,7 @@ import { HttpClientModule } from "@angular/common/http";
 @Component({
   selector: 'login-page',
   standalone: true,
-  imports: [RouterOutlet, FormsModule, HttpClientModule],
+  imports: [RouterOutlet, FormsModule, HttpClientModule, RouterLink],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.css'
 })

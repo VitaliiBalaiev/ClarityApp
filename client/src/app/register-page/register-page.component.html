@@ -1,0 +1,24 @@
+<link rel="stylesheet" href="/client/src/app/login-page/register-page.component.css">
+
+<div class="register-container">
+  <h2 class="register-title">Register</h2>
+  <form #registerForm="ngForm" class="register-form" (ngSubmit)="register()"
+        autocomplete="off">
+    <input
+      name="username"
+      [(ngModel)]="model.username"
+      type="text"
+      placeholder="Username"
+      class="register-input">
+    <input
+      name="password"
+      [(ngModel)]="model.password"
+      type="password"
+      placeholder="Password"
+      class="register-input">
+    <button type="submit" class="register-button">Register</button>
+  </form>
+  <p>Already have an account?</p>
+  <a routerLink="/login">Sign in</a>
+</div>
+

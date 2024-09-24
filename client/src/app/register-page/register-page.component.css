@@ -1,9 +1,9 @@
-/* Login Container */
+/* register Container */
 p{
   color: white;
 }
 
-.login-container {
+.register-container {
   background-color: #1a202c;
   border: 1px solid #7e98df;
   padding: 20px;  /* Increased padding */
@@ -15,23 +15,23 @@ p{
   align-items: center;
 }
 
-/* Login Title */
-.login-title {
+/* register Title */
+.register-title {
   color: #7e98df;
   text-align: center;
   margin-bottom: 30px;  /* Increased margin */
   font-size: 1.8em;  /* Larger font size */
 }
 
-/* Login Form */
-.login-form {
+/* register Form */
+.register-form {
   display: flex;
   flex-direction: column;
   width: 100%;
 }
 
 /* Input Fields */
-.login-input {
+.register-input {
   padding: 15px;  /* Increased padding */
   margin-bottom: 20px;  /* Increased margin */
   border: 1px solid #4a5568;
@@ -42,13 +42,13 @@ p{
   transition: border-color 0.3s ease;
 }
 
-.login-input:focus {
+.register-input:focus {
   border-color: #7e98df;
   outline: none;
 }
 
 /* Submit Button */
-.login-button {
+.register-button {
   padding: 15px;  /* Increased padding */
   border: none;
   border-radius: 4px;
@@ -60,7 +60,7 @@ p{
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.login-button:hover {
+.register-button:hover {
   background-color: #5e79bf;
   color: #edf2f7;
 }
