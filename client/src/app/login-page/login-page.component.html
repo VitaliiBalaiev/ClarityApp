@@ -1,0 +1,22 @@
+
+<link rel="stylesheet" href="/client/src/app/login-page/login-page.component.css">
+
+<div class="login-container">
+  <h2 class="login-title">Login</h2>
+  <form #loginForm="ngForm" class="login-form" (ngSubmit)="login()"
+    autocomplete="off">
+    <input
+      name="username"
+      [(ngModel)]="model.username"
+      type="text"
+      placeholder="Username"
+      class="login-input">
+    <input
+      name="password"
+      [(ngModel)]="model.password"
+      type="password"
+      placeholder="Password"
+      class="login-input">
+    <button type="submit" class="login-button">Log In</button>
+  </form>
+</div>
