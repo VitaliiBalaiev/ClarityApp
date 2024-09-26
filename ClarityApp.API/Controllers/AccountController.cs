@@ -64,9 +64,7 @@ public class AccountController : ControllerBase
         var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
 
         if (computedHash.Where((t, i) => t != user.PasswordHash[i]).Any())
-        {
             return Unauthorized("Invalid password");
-        }
 
         return new UserDTO
         {

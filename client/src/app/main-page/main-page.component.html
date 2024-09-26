@@ -1,0 +1,16 @@
+<div class="top-bar">
+  <div class="user-info">
+    <p>
+      Clarity
+    </p>
+  </div>
+
+  <ng-template #showLogin>
+    <button class="login-button" (click)="redirectToLogin()">Log In</button>
+  </ng-template>
+
+  <div class="extra-info" *ngIf="currentUser; else showLogin">
+    <span>Other Info</span>
+    <button class="logout-button" (click)="logout()">Log Out</button>
+  </div>
+</div>

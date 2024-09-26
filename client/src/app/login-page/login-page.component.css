@@ -6,14 +6,17 @@ p{
 .login-container {
   background-color: #1a202c;
   border: 1px solid #7e98df;
-  padding: 20px;  /* Increased padding */
+  padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  width: 400px;  /* Increased max width */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  width: 400px;
+  margin: auto; /* This will center it horizontally */
+  position: absolute; /* Make it absolute */
+  top: 50%; /* Position it vertically */
+  left: 50%; /* Position it horizontally */
+  transform: translate(-50%, -50%); /* Adjust for element width and height */
 }
+
 
 /* Login Title */
 .login-title {

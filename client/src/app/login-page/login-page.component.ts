@@ -13,7 +13,6 @@ import { HttpClientModule } from "@angular/common/http";
 })
 export class LoginPageComponent implements OnInit {
   model: any = {}
-  loggedIn: boolean;
   constructor(private accountService: AccountService) { }
 
   ngOnInit(): void {
@@ -23,7 +22,6 @@ export class LoginPageComponent implements OnInit {
     this.accountService.login(this.model).subscribe({
       next: response => {
         console.log(response);
-        this.loggedIn = true;
       },
       error: error => {
         console.error(error); // Log the error
