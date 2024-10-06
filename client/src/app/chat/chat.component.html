@@ -1,0 +1,24 @@
+<div class="chat-container">
+  <!-- Sidebar with chat list -->
+  <div class="chat-list">
+    <h3>Chats</h3>
+    <ul>
+      <li *ngFor="let chat of chats" (click)="switchChat(chat)">{{ chat }}</li>
+    </ul>
+  </div>
+
+  <!-- Main chat area -->
+  <div class="chat-area">
+    <div class="message-list">
+      <div *ngFor="let message of messages">
+        <strong>{{ message.userName }}:</strong> {{ message.content }} <br />
+      </div>
+    </div>
+
+    <!-- Input bar -->
+    <div class="message-input">
+      <input [(ngModel)]="newMessage" placeholder="Type your message..." />
+      <button (click)="sendMessage()">Send</button>
+    </div>
+  </div>
+</div>

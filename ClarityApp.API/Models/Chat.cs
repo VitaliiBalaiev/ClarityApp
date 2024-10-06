@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace ClarityApp.API.Models;
 
 public class Chat

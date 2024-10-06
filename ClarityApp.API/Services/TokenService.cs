@@ -1,8 +1,11 @@
+using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using ClarityApp.API.Interfaces;
 using ClarityApp.API.Models;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace ClarityApp.API.Services;
@@ -16,7 +19,7 @@ public class TokenService : ITokenService
         _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]));
     }
     
-    public string CreateToken(User user)    
+    public string CreateToken(User user)
     {
         var claims = new List<Claim>
         {

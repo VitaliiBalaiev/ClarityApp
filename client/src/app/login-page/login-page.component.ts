@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {RouterLink, RouterOutlet} from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AccountService } from "../_services/account.service";
 import { HttpClientModule } from "@angular/common/http";

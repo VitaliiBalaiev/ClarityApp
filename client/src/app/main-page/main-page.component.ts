@@ -3,12 +3,14 @@ import {User} from "../_models/user";
 import {AccountService} from "../_services/account.service";
 import {NgIf} from "@angular/common";
 import {Router} from "@angular/router";
+import {ChatComponent} from "../chat/chat.component";
 
 @Component({
   selector: 'main-page',
   standalone: true,
   imports: [
-    NgIf
+    NgIf,
+    ChatComponent
   ],
   templateUrl: './main-page.component.html',
   styleUrl: './main-page.component.css'
