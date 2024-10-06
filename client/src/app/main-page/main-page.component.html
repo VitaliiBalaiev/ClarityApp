@@ -5,11 +5,8 @@
     </p>
   </div>
 
-  <ng-template #showLogin>
-    <button class="login-button" (click)="redirectToLogin()">Log In</button>
-  </ng-template>
 
-  <div class="extra-info" *ngIf="currentUser; else showLogin">
+  <div class="extra-info">
     <span>Other Info</span>
     <button class="logout-button" (click)="logout()">Log Out</button>
   </div>

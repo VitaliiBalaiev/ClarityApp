@@ -29,10 +29,9 @@ export class MainPageComponent implements OnInit {
 
   logout() {
     this.accountService.logout();
-    console.log("Successfully logged out");
+    this.router.navigateByUrl('/login').then(() => {
+      console.log("Successfully logged out");
+    });
   }
 
-  redirectToLogin() {
-    this.router.navigate(['/login']);
-  }
 }
