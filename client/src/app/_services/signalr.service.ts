@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import * as signalR from "@microsoft/signalr";
 import { Message } from "../_models/message";
 import { BehaviorSubject } from 'rxjs';
+import {HttpClient} from "@angular/common/http";
 
 @Injectable({
   providedIn: 'root'
@@ -9,19 +10,20 @@ import { BehaviorSubject } from 'rxjs';
 export class SignalrService {
   connection: signalR.HubConnection;
 
-  // Using BehaviorSubject to store and emit messages
+  baseApiUrl = 'http://localhost:5045/api/';
+  private userObj = JSON.parse(localStorage.getItem('user'));
   private messageSubject = new BehaviorSubject<Message[]>([]);
-  public messages$ = this.messageSubject.asObservable(); // Expose as observable
+  public messages$ = this.messageSubject.asObservable();
 
-  constructor() {
+  constructor(private http: HttpClient) {
     this.connection = new signalR.HubConnectionBuilder()
       .withUrl("http://localhost:5045/chathub", {
-        accessTokenFactory: () => localStorage.getItem("jwtToken")
+        accessTokenFactory: () => this.userObj.token
       })
       .build();
 
     this.connection.on("ReceiveMessage", (username: string, content: string) => {
-      console.log("Message received:", username, content); // Debug log
+      console.log("Message received:", username, content);
       const message: Message = {
         chatId: 'yourChatId',
         userId: username,
@@ -43,10 +45,19 @@ export class SignalrService {
       .catch(err => console.error("Error while starting SignalR connection: ", err));
   }
 
-  public sendMessage(chatId: string, user: string, message: string) {
+  public sendMessage(user: string, message: string) {
     if (this.connection.state === signalR.HubConnectionState.Connected) {
       this.connection.invoke("SendMessage", user, message)
-        .catch(err => console.error("Error while sending message: ", err))
+        .catch(err => console.error("Error while sending message: ", err));
+      const Message: Message = {
+        chatId: "123",
+        userName: user,
+        content: message,
+        timestamp: new Date(),
+        userId: "1"
+      }
+      this.http.post(`${this.baseApiUrl}/message/store-message`, Message);
+      console.log("Message stored:", Message)
     } else {
       console.error("SignalR connection is not established. Cannot send message.");
     }

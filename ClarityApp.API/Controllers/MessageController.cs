@@ -6,9 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ClarityApp.API.Controllers;
 
-[Authorize]
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/message")]
 public class MessageController : ControllerBase
 {
 	private readonly IMessageService _messageService;
@@ -16,13 +15,6 @@ public class MessageController : ControllerBase
 	public MessageController(IMessageService messageService)
 	{
 		_messageService = messageService;
-	}
-
-	[HttpPost]
-	public async Task<IActionResult> StoreMessage([FromBody] MessageDTO messageDto)
-	{
-		await _messageService.StoreMessageAsync(messageDto);
-		return Ok();
 	}
 
 	[HttpGet("{chatId}")]

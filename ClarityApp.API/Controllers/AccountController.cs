@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ClarityApp.API.Controllers;
 
 [ApiController] 
-[Route("api/[controller]")]
+[Route("api/account")]
 
 public class AccountController : ControllerBase
 {

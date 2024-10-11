@@ -34,8 +34,8 @@ public class MessageService : IMessageService
 	public async Task<List<UserMessage>> GetAllMessagesAsync(int chatId)
 	{
 		return await _context.Messages
-			.Where(m => m.ChatId == chatId)  // Change here
-			.OrderBy(m => m.Timestamp)
-			.ToListAsync();
+					.Where(m => m.ChatId == chatId)
+					.OrderBy(m => m.Timestamp)
+					.ToListAsync();
 	}
 }

@@ -1,7 +1,7 @@
 /* Top bar container */
 .top-bar {
   width: 100%; /* Ensure the bar spans the entire width of the page */
-  height: 60px;  /* Height of the top bar */
+  height: 7vh;  /* Height of the top bar */
   background-color: #1a202c;  /* Background color */
   display: flex;
   justify-content: space-between;  /* Space between username and other info */

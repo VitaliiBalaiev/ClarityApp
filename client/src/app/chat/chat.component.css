@@ -1,14 +1,17 @@
 /* Container for the entire chat */
 .chat-container {
   display: flex;
-  height: 100vh;
+  height: 93vh;
 }
 
 /* Sidebar for chat list */
 .chat-list {
   width: 300px;
+  max-width: 400px;
+  min-width: 200px;
   background-color: #1f1f1f; /* Adjust the color as needed */
   padding: 20px;
+  resize: horizontal;
   overflow-y: auto; /* Allow scrolling if chat list is long */
 }
 

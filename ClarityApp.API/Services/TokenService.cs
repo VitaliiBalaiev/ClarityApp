@@ -13,17 +13,19 @@ namespace ClarityApp.API.Services;
 public class TokenService : ITokenService
 {
     private readonly SymmetricSecurityKey _key;
+    private readonly IConfiguration _config;
     
     public TokenService(IConfiguration config)
     {
-        _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]));
+        _config = config;
+        _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:TokenKey"]));
     }
     
     public string CreateToken(User user)
     {
         var claims = new List<Claim>
         {
-            new Claim(JwtRegisteredClaimNames.NameId, user.UserName)
+            new(JwtRegisteredClaimNames.NameId, user.UserName)
         };
         
         var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256Signature);
@@ -31,8 +33,10 @@ public class TokenService : ITokenService
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.Now.AddDays(7),
-            SigningCredentials = creds
+            Expires = DateTime.Now.AddMinutes(5),
+            SigningCredentials = creds,
+            Issuer = _config["Jwt:Issuer"],
+            Audience = _config["Jwt:Audience"]
         };
         
         var tokenHandler = new JwtSecurityTokenHandler();

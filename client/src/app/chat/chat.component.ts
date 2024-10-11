@@ -52,7 +52,7 @@ export class ChatComponent implements OnInit {
   // Handle sending a message
   sendMessage() {
     if (this.newMessage.trim()) {
-      this.signalrService.sendMessage(this.chatId, this.currentUsername, this.newMessage);
+      this.signalrService.sendMessage(this.currentUsername, this.newMessage);
       this.newMessage = ''; // Clear input after sending
     }
   }
