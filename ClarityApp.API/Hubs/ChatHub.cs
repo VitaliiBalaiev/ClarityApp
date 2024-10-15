@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
-using ClarityApp.API.Models;
 
 namespace ClarityApp.API.Hubs;
 
@@ -9,8 +8,8 @@ public class ChatHub : Hub
 	public async Task SendMessage(string user, string message)
 	{
 		await Clients.All.SendAsync("ReceiveMessage", user, message);
-		
-		
+
+
 	}
 
 	public async Task JoinRoom(string roomName)

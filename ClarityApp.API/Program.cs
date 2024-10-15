@@ -80,6 +80,7 @@ builder.Services.AddAuthentication(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
+            NameClaimType = "nameid",
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateLifetime = false,

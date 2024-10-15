@@ -4,19 +4,22 @@ import {AccountService} from "../_services/account.service";
 import {NgIf} from "@angular/common";
 import {Router} from "@angular/router";
 import {ChatComponent} from "../chat/chat.component";
+import {SearchbarComponent} from "../searchbar/searchbar.component";
 
 @Component({
   selector: 'main-page',
   standalone: true,
-  imports: [
-    NgIf,
-    ChatComponent
-  ],
+    imports: [
+        NgIf,
+        ChatComponent,
+        SearchbarComponent
+    ],
   templateUrl: './main-page.component.html',
   styleUrl: './main-page.component.css'
 })
 export class MainPageComponent implements OnInit {
   currentUser: User | null = null;
+  public foundUsers: User[] = [];
 
   constructor(private accountService: AccountService, private router: Router) { }
 
@@ -25,6 +28,10 @@ export class MainPageComponent implements OnInit {
     this.accountService.currentUser$.subscribe(user => {
       this.currentUser = user; // Update current user on login/logout
     });
+  }
+
+  handleSearchResults(users: User[]) {
+    this.foundUsers = users; // Store the found users
   }
 
   logout() {

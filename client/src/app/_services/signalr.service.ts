@@ -2,15 +2,16 @@ import { Injectable } from "@angular/core";
 import * as signalR from "@microsoft/signalr";
 import { Message } from "../_models/message";
 import { BehaviorSubject } from 'rxjs';
-import {HttpClient} from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
+import {ChatComponent} from "../chat/chat.component";
+import {Chat} from "../_models/chat";
 
 @Injectable({
   providedIn: 'root'
 })
 export class SignalrService {
   connection: signalR.HubConnection;
-
-  baseApiUrl = 'http://localhost:5045/api/';
+  baseApiUrl: string = 'http://localhost:5045/api/';
   private userObj = JSON.parse(localStorage.getItem('user'));
   private messageSubject = new BehaviorSubject<Message[]>([]);
   public messages$ = this.messageSubject.asObservable();
@@ -56,8 +57,6 @@ export class SignalrService {
         timestamp: new Date(),
         userId: "1"
       }
-      this.http.post(`${this.baseApiUrl}/message/store-message`, Message);
-      console.log("Message stored:", Message)
     } else {
       console.error("SignalR connection is not established. Cannot send message.");
     }

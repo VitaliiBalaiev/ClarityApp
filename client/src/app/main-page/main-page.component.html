@@ -4,10 +4,8 @@
       Clarity
     </p>
   </div>
-
-
+  <app-searchbar (searchResults)="handleSearchResults($event)"></app-searchbar>
   <div class="extra-info">
-    <span>Other Info</span>
     <button class="logout-button" (click)="logout()">Log Out</button>
   </div>
 

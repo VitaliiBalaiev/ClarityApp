@@ -1,10 +1,11 @@
-import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { SignalrService } from '../_services/signalr.service';
 import { Message } from '../_models/message';
 import { FormsModule } from "@angular/forms";
-import { DatePipe, NgForOf } from "@angular/common";
-import { Subject, takeUntil } from 'rxjs';
+import {DatePipe, NgForOf, NgOptimizedImage} from "@angular/common";
 import {User} from "../_models/user";
+import {SearchbarComponent} from "../searchbar/searchbar.component";
+import {SharedResourcesService} from "../_services/shared-resources.service";
 
 @Component({
   selector: 'app-chat',
@@ -13,7 +14,9 @@ import {User} from "../_models/user";
   imports: [
     FormsModule,
     NgForOf,
-    DatePipe
+    DatePipe,
+    NgOptimizedImage,
+    SearchbarComponent
   ],
   styleUrls: ['./chat.component.css']
 })
@@ -24,9 +27,13 @@ export class ChatComponent implements OnInit {
   public userObj: User = JSON.parse(localStorage.getItem('user'));
   public currentUsername: string = this.userObj.username;
   public chats: string[] = [];
-  constructor(private signalrService: SignalrService) {}
+  public users: User[] = [];
+  constructor(private signalrService: SignalrService, private sharedResourcesService: SharedResourcesService) {}
 
   ngOnInit() {
+    this.sharedResourcesService.currentResource.subscribe(users => {
+      this.users = users;
+    })
     this.loadChats();
 
     // Subscribe to messages from SignalR, ensuring only messages for the selected chat are loaded
@@ -38,9 +45,10 @@ export class ChatComponent implements OnInit {
   // Load available chats (this could be fetched from your API)
   loadChats() {
     // Example data; replace with actual chat fetching logic
-    this.chats = []; // Example chat IDs
-    this.chatId = this.chats[0]; // Default to the first chat
-    this.loadMessages(this.chatId); // Load messages for the default chat
+    //this.chats = []; // Example chat IDs
+    //this.chatId = this.chats[0]; // Default to the first chat
+    //this.loadMessages(this.chatId); // Load messages for the default chat
+    this.chats = this.users.map(user => user.username);
   }
 
   // Switch between chats
