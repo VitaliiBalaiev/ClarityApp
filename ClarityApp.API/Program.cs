@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Text;
 using ClarityApp.API.Configurations;
 using ClarityApp.API.Data;
@@ -80,10 +81,9 @@ builder.Services.AddAuthentication(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            NameClaimType = "nameid",
             ValidateIssuer = true,
             ValidateAudience = true,
-            ValidateLifetime = false,
+            ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"], 
             ValidAudience = builder.Configuration["Jwt:Audience"],

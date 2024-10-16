@@ -1,8 +1,12 @@
+using System;
+using System.Linq;
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ClarityApp.API.Hubs;
 
+[Authorize]
 public class ChatHub : Hub
 {
 	public async Task SendMessage(string user, string message)
@@ -12,6 +16,12 @@ public class ChatHub : Hub
 
 	}
 
+	public override async Task OnConnectedAsync()
+	{
+		Console.WriteLine(Context.User.Identity.Name);
+		await base.OnConnectedAsync();
+	}
+	
 	public async Task JoinRoom(string roomName)
 	{
 		await Groups.AddToGroupAsync(Context.ConnectionId, roomName);

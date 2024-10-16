@@ -18,31 +18,39 @@ namespace ClarityApp.API.Controllers;
 
 public class UsersController : ControllerBase
 {
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<User>>> GetUsers(DataContext context)
-    {
-        return await context.Users.ToListAsync();
-    }
+	[HttpGet]
+	public async Task<ActionResult<IEnumerable<User>>> GetUsers(DataContext context)
+	{
+		return await context.Users.ToListAsync();
+	}
 
-    [HttpGet("{id:int}")]
-    public async Task<ActionResult<User>> GetUser(DataContext context, int id)
-    {
-	    return await context.Users.FindAsync(id);
-    }
+	[HttpGet("{id:int}")]
+	public async Task<ActionResult<User>> GetUser(DataContext context, int id)
+	{
+		return await context.Users.FindAsync(id);
+	}
 
-    [HttpGet("{username}")]
-    public async Task<ActionResult<IEnumerable<UserDTO>>> GetUserByUsername(string? username, DataContext context)
-    {
-        if (username != null)
-        {
-            return await context.Users
-                .Where(u => EF.Functions.Like(u.UserName, username + "%"))
-                .Select(u => new UserDTO { Username = u.UserName })
-                .ToListAsync();
+	//TEST METHOD!!!
+	[HttpGet("test-claims")]
+	public IActionResult GetTestClaims()
+	{
+		var claims = User.Claims.Select(c => new { c.Type, c.Value }).ToList();
+		return Ok(claims);
+	}
+    
+	[HttpGet("{username}")]
+	public async Task<ActionResult<IEnumerable<UserDTO>>> GetUserByUsername(string? username, DataContext context)
+	{
+		if (username != null)
+		{
+			return await context.Users
+				.Where(u => EF.Functions.Like(u.UserName, username + "%"))
+				.Select(u => new UserDTO { Username = u.UserName })
+				.ToListAsync();
             
-        }
+		}
 
-        return await Task.FromResult(Array.Empty<UserDTO>().ToList());
+		return await Task.FromResult(Array.Empty<UserDTO>().ToList());
 
-    }
-} 
+	}
+}
