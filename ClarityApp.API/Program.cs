@@ -8,6 +8,7 @@ using ClarityApp.API.Interfaces;
 using ClarityApp.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -113,7 +114,12 @@ app.UseCors("AllowAllOrigins");
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapHub<ChatHub>("/chathub");
+app.MapHub<ChatHub>("/chathub", options =>
+{
+    options.Transports =
+        HttpTransportType.WebSockets |
+        HttpTransportType.LongPolling;
+});
 app.MapControllers();
 
 app.Run();

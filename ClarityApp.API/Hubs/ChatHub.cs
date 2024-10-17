@@ -9,28 +9,33 @@ namespace ClarityApp.API.Hubs;
 [Authorize]
 public class ChatHub : Hub
 {
-	public async Task SendMessage(string user, string message)
+	private static readonly Dictionary<string, string> _connections = new();
+
+	public override Task OnConnectedAsync()
 	{
-		await Clients.All.SendAsync("ReceiveMessage", user, message);
-
-
+		var username = Context.User.Identity.Name;
+		if (!_connections.ContainsKey(username))
+		{
+			_connections.Add(username, Context.ConnectionId);
+			Console.WriteLine($"{username} is connected. ConnectionId: {Context.ConnectionId}");
+		}
+		return base.OnConnectedAsync();
 	}
 
-	public override async Task OnConnectedAsync()
+	public override Task OnDisconnectedAsync(Exception? exception)
 	{
-		Console.WriteLine(Context.User.Identity.Name);
-		await base.OnConnectedAsync();
+		var username = Context.User.Identity.Name;
+		_connections.Remove(username);
+		return base.OnDisconnectedAsync(exception);
 	}
 	
-	public async Task JoinRoom(string roomName)
+	public async Task SendMessage(string receivingUsername, string message)
 	{
-		await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
-		await Clients.Group(roomName).SendAsync("ReceiveMessage", "System", $"{Context.ConnectionId} has joined the room {roomName}.");
+		if (_connections.TryGetValue(receivingUsername, out var connectionId))
+		{
+			await Clients.Client(connectionId).SendAsync("ReceiveMessage", Context.User.Identity.Name, message);
+		}
 	}
+	
 
-	public async Task LeaveRoom(string roomName)
-	{
-		await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomName);
-		await Clients.Group(roomName).SendAsync("ReceiveMessage", "System", $"{Context.ConnectionId} has left the room {roomName}.");
-	}
 }

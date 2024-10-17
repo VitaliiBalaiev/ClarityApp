@@ -20,9 +20,6 @@ export class LoginPageComponent implements OnInit {
 
   login() {
     this.accountService.login(this.model).subscribe({
-      next: response => {
-        console.log(response);
-      },
       error: error => {
         console.error(error); // Log the error
       }

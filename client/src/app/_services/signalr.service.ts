@@ -11,14 +11,14 @@ import {Chat} from "../_models/chat";
 })
 export class SignalrService {
   connection: signalR.HubConnection;
-  baseApiUrl: string = 'http://localhost:5045/api/';
+  hubApiUrl: string = 'http://localhost:5045/chathub';
   private userObj = JSON.parse(localStorage.getItem('user'));
   private messageSubject = new BehaviorSubject<Message[]>([]);
   public messages$ = this.messageSubject.asObservable();
 
   constructor(private http: HttpClient) {
     this.connection = new signalR.HubConnectionBuilder()
-      .withUrl("http://localhost:5045/chathub", {
+      .withUrl(this.hubApiUrl, {
         accessTokenFactory: () => this.userObj.token
       })
       .build();
@@ -46,19 +46,15 @@ export class SignalrService {
       .catch(err => console.error("Error while starting SignalR connection: ", err));
   }
 
-  public sendMessage(user: string, message: string) {
-    if (this.connection.state === signalR.HubConnectionState.Connected) {
-      this.connection.invoke("SendMessage", user, message)
-        .catch(err => console.error("Error while sending message: ", err));
-      const Message: Message = {
-        chatId: "123",
-        userName: user,
-        content: message,
-        timestamp: new Date(),
-        userId: "1"
-      }
-    } else {
-      console.error("SignalR connection is not established. Cannot send message.");
+  public sendMessage(connectionId: string, message: string) {
+    this.connection.invoke("SendMessage", connectionId, message)
+      .catch(err => console.error("Error while sending message: ", err));
+    const Message: Message = {
+      chatId: "123",
+      userName: "user",
+      content: message,
+      timestamp: new Date(),
+      userId: "1"
     }
   }
 }

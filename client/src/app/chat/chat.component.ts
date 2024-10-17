@@ -28,6 +28,8 @@ export class ChatComponent implements OnInit {
   public currentUsername: string = this.userObj.username;
   public chats: string[] = [];
   public users: User[] = [];
+  public receivingUser: string;
+  private searchBar: SearchbarComponent;
   constructor(private signalrService: SignalrService, private sharedResourcesService: SharedResourcesService) {}
 
   ngOnInit() {
