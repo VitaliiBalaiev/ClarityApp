@@ -5,15 +5,17 @@ import {NgIf} from "@angular/common";
 import {Router} from "@angular/router";
 import {ChatComponent} from "../chat/chat.component";
 import {SearchbarComponent} from "../searchbar/searchbar.component";
+import {FormsModule} from "@angular/forms";
 
 @Component({
   selector: 'main-page',
   standalone: true,
-    imports: [
-        NgIf,
-        ChatComponent,
-        SearchbarComponent
-    ],
+  imports: [
+    NgIf,
+    ChatComponent,
+    SearchbarComponent,
+    FormsModule
+  ],
   templateUrl: './main-page.component.html',
   styleUrl: './main-page.component.css'
 })

@@ -18,19 +18,16 @@ export class SearchbarComponent {
   public searchProperty = '';
   public users: User[] = [];
 
-  @Output() searchResults = new EventEmitter<User[]>();
   constructor(private userService: UserService, private sharedResourcesService: SharedResourcesService) { }
 
   onSearch(event: any){
     this.searchProperty = event.target.value;
-    console.log(this.searchProperty);
     this.searchUser();
   }
   searchUser(){
     if(this.searchProperty.trim() !== ""){
       this.userService.searchUser(this.searchProperty).subscribe((users: User[]) => {
         this.users = users;
-        console.log(users);
         this.sharedResourcesService.updateUsers(this.users);
       })
     } else {

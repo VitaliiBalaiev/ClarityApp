@@ -9,8 +9,6 @@ public class User
     public string? UserName { get; set; }
     public byte[] PasswordHash { get; set; }
     public byte[] PasswordSalt { get; set; }
-
-    [NotMapped] public bool IsOnline { get; set; }
     
     public ICollection<Chat> Chats { get; }
     public ICollection<UserMessage> Messages { get; }

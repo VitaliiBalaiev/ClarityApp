@@ -1,13 +1,17 @@
 <div class="chat-container">
   <!-- Sidebar with chat list -->
+
   <div class="chat-list">
-    <div *ngFor="let user of users" class="user-card">
+    <div *ngFor="let user of users" class="user-card" (click)="showChat(currentUser, user.username)">
       {{user.username}}
     </div>
   </div>
 
   <!-- Main chat area -->
   <div class="chat-area">
+    <div class="chat-name" [(ngModel)]="groupName">
+      <p>{{groupName}}</p>
+    </div>
     <div class="message-list">
       <div *ngFor="let message of messages">
         <strong>{{ message.userName }}: {{message.content}}</strong> <br />

@@ -4,7 +4,10 @@
       Clarity
     </p>
   </div>
-  <app-searchbar (searchResults)="handleSearchResults($event)"></app-searchbar>
+  <app-searchbar></app-searchbar>
+  <div class="username">
+    <p [(ngModel)]="currentUser">{{currentUser.username}}</p>
+  </div>
   <div class="extra-info">
     <button class="logout-button" (click)="logout()">Log Out</button>
   </div>

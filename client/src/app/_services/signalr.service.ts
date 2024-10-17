@@ -23,6 +23,8 @@ export class SignalrService {
       })
       .build();
 
+    this.startConnection();
+
     this.connection.on("ReceiveMessage", (username: string, content: string) => {
       console.log("Message received:", username, content);
       const message: Message = {
@@ -36,8 +38,6 @@ export class SignalrService {
       const currentMessages = this.messageSubject.value;
       this.messageSubject.next([...currentMessages, message]);
     });
-
-    this.startConnection();
   }
 
   private startConnection() {
@@ -46,8 +46,8 @@ export class SignalrService {
       .catch(err => console.error("Error while starting SignalR connection: ", err));
   }
 
-  public sendMessage(connectionId: string, message: string) {
-    this.connection.invoke("SendMessage", connectionId, message)
+  public sendMessage(groupName: string, message: string) {
+    this.connection.invoke("SendMessage", groupName, message)
       .catch(err => console.error("Error while sending message: ", err));
     const Message: Message = {
       chatId: "123",
@@ -56,5 +56,10 @@ export class SignalrService {
       timestamp: new Date(),
       userId: "1"
     }
+  }
+
+  public showChat(initiatorUser: string, recipientUser: string) {
+    this.connection.invoke("ShowChat", initiatorUser, recipientUser)
+      .catch(err => console.error("Error while initializing chat: ", err));
   }
 }

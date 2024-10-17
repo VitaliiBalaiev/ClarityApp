@@ -21,15 +21,16 @@ import {SharedResourcesService} from "../_services/shared-resources.service";
   styleUrls: ['./chat.component.css']
 })
 export class ChatComponent implements OnInit {
-  public newMessage: string = '';
-  public messages: Message[] = [];
-  public chatId: string = '';
-  public userObj: User = JSON.parse(localStorage.getItem('user'));
-  public currentUsername: string = this.userObj.username;
-  public chats: string[] = [];
   public users: User[] = [];
-  public receivingUser: string;
-  private searchBar: SearchbarComponent;
+  public userObj: User = JSON.parse(localStorage.getItem('user'));
+  public currentUser: string = this.userObj.username;
+  public recipientUser: string;
+  public chats: string[] = [];
+  public chatId: string = '';
+  public messages: Message[] = [];
+  public newMessage: string = '';
+  public groupName: string = '';
+
   constructor(private signalrService: SignalrService, private sharedResourcesService: SharedResourcesService) {}
 
   ngOnInit() {
@@ -59,12 +60,23 @@ export class ChatComponent implements OnInit {
     this.loadMessages(chatId); // Load messages for the selected chat
   }
 
+  showChat(initiatorUser: string, recipientUser: string) {
+    this.signalrService.showChat(initiatorUser, recipientUser);
+    this.recipientUser = recipientUser;
+    this.groupName = this.setGroupName();
+  }
   // Handle sending a message
   sendMessage() {
     if (this.newMessage.trim()) {
-      this.signalrService.sendMessage(this.currentUsername, this.newMessage);
+      this.signalrService.sendMessage(this.groupName, this.newMessage);
       this.newMessage = ''; // Clear input after sending
     }
+  }
+
+  setGroupName(){
+    const users = [this.currentUser, this.recipientUser];
+    users.sort();
+    return this.groupName = users[0] + "_" + users[1] + "_chat";
   }
 
   // Load messages for the selected chat
