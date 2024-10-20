@@ -1,7 +1,7 @@
 export interface Message {
   chatId: string;
-  userId: string;
+  senderId: string;
   content: string;
   timestamp: Date;
-  userName?: string;
+  senderUsername?: string;
 }

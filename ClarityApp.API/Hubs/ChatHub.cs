@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
+using ClarityApp.API.DTOs;
+using ClarityApp.API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 
 namespace ClarityApp.API.Hubs;
@@ -12,10 +14,15 @@ namespace ClarityApp.API.Hubs;
 public class ChatHub : Hub
 {
 	private static readonly Dictionary<string, string> _connections = new();
+	private IMessageService _messageService;
 
+	public ChatHub(IMessageService messageService)
+	{
+		_messageService = messageService;
+	}
 	public override Task OnConnectedAsync()
 	{
-		var username = Context.User.Identity.Name;
+		var username = Context.User?.Identity?.Name;
 		if (!_connections.ContainsKey(username))
 		{
 			_connections.Add(username, Context.ConnectionId);
@@ -26,14 +33,15 @@ public class ChatHub : Hub
 
 	public override Task OnDisconnectedAsync(Exception? exception)
 	{
-		var username = Context.User.Identity.Name;
+		var username = Context.User?.Identity?.Name;
 		_connections.Remove(username);
 		return base.OnDisconnectedAsync(exception);
 	}
 	
-	public async Task SendMessage(string groupName, string message)
+	public async Task SendMessage(string groupName, MessageDTO message)
 	{
-		Console.WriteLine($"{groupName}: {message}");
+		Console.WriteLine($"{message.ChatId}, {message.SenderId}, {message.Content}, {message.Timestamp}, {message.SenderUsername}");
+		await _messageService.StoreMessageAsync(message);
 		await Clients.Group(groupName).SendAsync("ReceiveMessage", message);
 	}
 
@@ -52,8 +60,6 @@ public class ChatHub : Hub
 			await Groups.AddToGroupAsync(recipientConnectionId, groupName);
 			Console.WriteLine($"{recipientUser} added to group {groupName}");
 		}
-
-		await Clients.Group(groupName).SendAsync("ReceiveMessage", "System", $"Chat between {initiatorUser} and {recipientUser} initialized.");
 	}
 
 	private string CreateGroupName(string user1, string user2)

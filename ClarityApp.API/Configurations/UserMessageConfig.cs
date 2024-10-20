@@ -20,7 +20,7 @@ public class UserMessageConfig : IEntityTypeConfiguration<UserMessage>
         
         builder.HasOne(m => m.Sender)
             .WithMany(u => u.Messages)
-            .HasForeignKey(m => m.UserId);
+            .HasForeignKey(m => m.SenderId);
 
 
     }

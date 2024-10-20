@@ -2,7 +2,7 @@ namespace ClarityApp.API.Models;
 
 public class ChatUser
 {
-	public int ChatId { get; set; }
+	public string ChatId { get; set; }
 	public Chat Chat { get; set; }
 	
 	public int UserId { get; set; }

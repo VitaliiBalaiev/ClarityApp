@@ -26,10 +26,9 @@ export class ChatComponent implements OnInit {
   public currentUser: string = this.userObj.username;
   public recipientUser: string;
   public chats: string[] = [];
-  public chatId: string = '';
   public messages: Message[] = [];
   public newMessage: string = '';
-  public groupName: string = '';
+  public chatId: string = '';
 
   constructor(private signalrService: SignalrService, private sharedResourcesService: SharedResourcesService) {}
 
@@ -37,7 +36,6 @@ export class ChatComponent implements OnInit {
     this.sharedResourcesService.currentResource.subscribe(users => {
       this.users = users;
     })
-    this.loadChats();
 
     // Subscribe to messages from SignalR, ensuring only messages for the selected chat are loaded
     this.signalrService.messages$.pipe().subscribe((messages) => {
@@ -45,43 +43,36 @@ export class ChatComponent implements OnInit {
     });
   }
 
-  // Load available chats (this could be fetched from your API)
-  loadChats() {
-    // Example data; replace with actual chat fetching logic
-    //this.chats = []; // Example chat IDs
-    //this.chatId = this.chats[0]; // Default to the first chat
-    //this.loadMessages(this.chatId); // Load messages for the default chat
-    this.chats = this.users.map(user => user.username);
-  }
-
-  // Switch between chats
-  switchChat(chatId: string) {
-    this.chatId = chatId; // Set the current chat ID
-    this.loadMessages(chatId); // Load messages for the selected chat
-  }
-
-  showChat(initiatorUser: string, recipientUser: string) {
-    this.signalrService.showChat(initiatorUser, recipientUser);
+  showChat(recipientUser: string) {
+    this.signalrService.showChat(this.currentUser, recipientUser);
     this.recipientUser = recipientUser;
-    this.groupName = this.setGroupName();
+    this.chatId = this.setChatId();
   }
-  // Handle sending a message
+
   sendMessage() {
     if (this.newMessage.trim()) {
-      this.signalrService.sendMessage(this.groupName, this.newMessage);
-      this.newMessage = ''; // Clear input after sending
+      this.signalrService.sendMessage(this.chatId, this.createMessage());
+      this.newMessage = '';
     }
   }
 
-  setGroupName(){
-    const users = [this.currentUser, this.recipientUser];
-    users.sort();
-    return this.groupName = users[0] + "_" + users[1] + "_chat";
+  createMessage(): Message {
+    return{
+      chatId: this.chatId,
+      senderId: "2",
+      content: this.newMessage,
+      timestamp: new Date(),
+      senderUsername: this.currentUser,
+    }
   }
 
-  // Load messages for the selected chat
+  setChatId(){
+    const users = [this.currentUser, this.recipientUser];
+    users.sort();
+    return this.chatId = `${users[0]}_${users[1]}_chat`;
+  }
+
   loadMessages(chatId: string) {
-    // Filter messages for the selected chat
     this.signalrService.messages$.pipe().subscribe((messages) => {
       this.messages = messages.filter(message => message.chatId === chatId);
     });

@@ -18,7 +18,7 @@ public class MessageController : ControllerBase
 	}
 
 	[HttpGet("{chatId}")]
-	public async Task<IActionResult> GetMessages(int chatId)
+	public async Task<IActionResult> GetMessages(string chatId)
 	{
 		var messages = await _messageService.GetAllMessagesAsync(chatId);
 		return Ok(messages);

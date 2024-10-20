@@ -2,19 +2,19 @@
   <!-- Sidebar with chat list -->
 
   <div class="chat-list">
-    <div *ngFor="let user of users" class="user-card" (click)="showChat(currentUser, user.username)">
+    <div *ngFor="let user of users" class="user-card" (click)="showChat(user.username)">
       {{user.username}}
     </div>
   </div>
 
   <!-- Main chat area -->
   <div class="chat-area">
-    <div class="chat-name" [(ngModel)]="groupName">
-      <p>{{groupName}}</p>
+    <div class="chat-name" [(ngModel)]="chatId">
+      <p>{{chatId}}</p>
     </div>
     <div class="message-list">
       <div *ngFor="let message of messages">
-        <strong>{{ message.userName }}: {{message.content}}</strong> <br />
+        <strong>{{ message.senderUsername }}: {{message.content}}</strong> <br />
       </div>
     </div>
     <!-- Input bar -->

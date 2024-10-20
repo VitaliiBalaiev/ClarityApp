@@ -25,15 +25,8 @@ export class SignalrService {
 
     this.startConnection();
 
-    this.connection.on("ReceiveMessage", (username: string, content: string) => {
-      console.log("Message received:", username, content);
-      const message: Message = {
-        chatId: 'yourChatId',
-        userId: username,
-        content: content,
-        timestamp: new Date(),
-        userName: username
-      };
+    this.connection.on("ReceiveMessage", (message: Message) => {
+      console.log("Message received:", message.senderUsername, message.content);
       // Get the current messages and add the new one
       const currentMessages = this.messageSubject.value;
       this.messageSubject.next([...currentMessages, message]);
@@ -46,16 +39,9 @@ export class SignalrService {
       .catch(err => console.error("Error while starting SignalR connection: ", err));
   }
 
-  public sendMessage(groupName: string, message: string) {
+  public sendMessage(groupName: string, message: Message) {
     this.connection.invoke("SendMessage", groupName, message)
       .catch(err => console.error("Error while sending message: ", err));
-    const Message: Message = {
-      chatId: "123",
-      userName: "user",
-      content: message,
-      timestamp: new Date(),
-      userId: "1"
-    }
   }
 
   public showChat(initiatorUser: string, recipientUser: string) {

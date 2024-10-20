@@ -21,17 +21,25 @@ public class MessageService : IMessageService
 	{
 		var message = new UserMessage
 		{
-			ChatId = int.Parse(messageDto.ChatId),
-			UserId = int.Parse(messageDto.UserId),
+			ChatId = messageDto.ChatId,
+			SenderId = int.Parse(messageDto.SenderId),
 			Content = messageDto.Content,
 			Timestamp = messageDto.Timestamp,
+			SenderUsername = messageDto.SenderUsername
 		};
 
-		_context.Messages.Add(message);
-		await _context.SaveChangesAsync();
+		try
+		{
+			_context.Messages.Add(message);
+			await _context.SaveChangesAsync();
+		}
+		catch (DbUpdateException ex)
+		{
+			Console.WriteLine($"Error saving message: {ex.Message}");
+		}
 	}
 
-	public async Task<List<UserMessage>> GetAllMessagesAsync(int chatId)
+	public async Task<List<UserMessage>> GetAllMessagesAsync(string chatId)
 	{
 		return await _context.Messages
 					.Where(m => m.ChatId == chatId)
