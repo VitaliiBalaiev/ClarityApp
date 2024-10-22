@@ -5,6 +5,7 @@ using ClarityApp.API.Configurations;
 using ClarityApp.API.Data;
 using ClarityApp.API.Hubs;
 using ClarityApp.API.Interfaces;
+using ClarityApp.API.Models;
 using ClarityApp.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -56,6 +57,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins", builder =>

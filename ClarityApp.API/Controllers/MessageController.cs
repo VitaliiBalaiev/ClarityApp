@@ -8,19 +8,12 @@ namespace ClarityApp.API.Controllers;
 
 [ApiController]
 [Route("api/message")]
-public class MessageController : ControllerBase
+public class MessageController(IMessageService messageService) : ControllerBase
 {
-	private readonly IMessageService _messageService;
-
-	public MessageController(IMessageService messageService)
-	{
-		_messageService = messageService;
-	}
-
 	[HttpGet("{chatId}")]
 	public async Task<IActionResult> GetMessages(string chatId)
 	{
-		var messages = await _messageService.GetAllMessagesAsync(chatId);
+		var messages = await messageService.GetAllMessagesAsync(chatId);
 		return Ok(messages);
 	}
 }

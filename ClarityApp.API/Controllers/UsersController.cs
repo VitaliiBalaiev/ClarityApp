@@ -29,14 +29,6 @@ public class UsersController : ControllerBase
 	{
 		return await context.Users.FindAsync(id);
 	}
-
-	//TEST METHOD!!!
-	[HttpGet("test-claims")]
-	public IActionResult GetTestClaims()
-	{
-		var claims = User.Claims.Select(c => new { c.Type, c.Value }).ToList();
-		return Ok(claims);
-	}
     
 	[HttpGet("{username}")]
 	public async Task<ActionResult<IEnumerable<UserDTO>>> GetUserByUsername(string? username, DataContext context)

@@ -26,6 +26,7 @@ public class TokenService : ITokenService
 		var claims = new List<Claim>
 		{
 			new(ClaimTypes.Name, user.UserName),
+			new(ClaimTypes.NameIdentifier, user.Id.ToString())
 		};
         
 		var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256Signature);

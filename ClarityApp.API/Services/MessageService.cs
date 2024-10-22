@@ -8,15 +8,8 @@ using ClarityApp.API.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ClarityApp.API.Services;
-public class MessageService : IMessageService
+public class MessageService(DataContext context) : IMessageService
 {
-	private readonly DataContext _context;
-
-	public MessageService(DataContext context)
-	{
-		_context = context;
-	}
-
 	public async Task StoreMessageAsync(MessageDTO messageDto)
 	{
 		var message = new UserMessage
@@ -30,8 +23,8 @@ public class MessageService : IMessageService
 
 		try
 		{
-			_context.Messages.Add(message);
-			await _context.SaveChangesAsync();
+			context.Messages.Add(message);
+			await context.SaveChangesAsync();
 		}
 		catch (DbUpdateException ex)
 		{
@@ -41,7 +34,7 @@ public class MessageService : IMessageService
 
 	public async Task<List<UserMessage>> GetAllMessagesAsync(string chatId)
 	{
-		return await _context.Messages
+		return await context.Messages
 					.Where(m => m.ChatId == chatId)
 					.OrderBy(m => m.Timestamp)
 					.ToListAsync();

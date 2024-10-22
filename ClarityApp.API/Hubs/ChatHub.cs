@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
+using ClarityApp.API.Data;
 using ClarityApp.API.DTOs;
 using ClarityApp.API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -11,15 +12,10 @@ using Microsoft.AspNetCore.Authorization;
 namespace ClarityApp.API.Hubs;
 
 [Authorize]
-public class ChatHub : Hub
+public class ChatHub(IMessageService messageService, IChatService chatService) : Hub
 {
 	private static readonly Dictionary<string, string> _connections = new();
-	private IMessageService _messageService;
 
-	public ChatHub(IMessageService messageService)
-	{
-		_messageService = messageService;
-	}
 	public override Task OnConnectedAsync()
 	{
 		var username = Context.User?.Identity?.Name;
@@ -41,26 +37,45 @@ public class ChatHub : Hub
 	public async Task SendMessage(string groupName, MessageDTO message)
 	{
 		Console.WriteLine($"{message.ChatId}, {message.SenderId}, {message.Content}, {message.Timestamp}, {message.SenderUsername}");
-		await _messageService.StoreMessageAsync(message);
+		await messageService.StoreMessageAsync(message);
 		await Clients.Group(groupName).SendAsync("ReceiveMessage", message);
 	}
 
 	public async Task ShowChat(string initiatorUser, string recipientUser)
-	{
-		var groupName = CreateGroupName(initiatorUser, recipientUser);
+    {
+        try
+        {
+            var groupName = CreateGroupName(initiatorUser, recipientUser);
+            
+            await chatService.StoreChatAsync(groupName);
+    
+            if (_connections.TryGetValue(initiatorUser, out var initiatorConnectionId))
+            {
+                await Groups.AddToGroupAsync(initiatorConnectionId, groupName);
+                Console.WriteLine($"{initiatorUser} added to group {groupName}");
+            }
+            else
+            {
+                Console.WriteLine($"Initiator {initiatorUser} not found in connections.");
+            }
+    
+            if (_connections.TryGetValue(recipientUser, out var recipientConnectionId))
+            {
+                await Groups.AddToGroupAsync(recipientConnectionId, groupName);
+                Console.WriteLine($"{recipientUser} added to group {groupName}");
+            }
+            else
+            {
+                Console.WriteLine($"Recipient {recipientUser} not found in connections.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in ShowChat: {ex.Message}");
+            throw;
+        }
+    }
 
-		if (_connections.TryGetValue(initiatorUser, out var initiatorConnectionId))
-		{
-			await Groups.AddToGroupAsync(initiatorConnectionId, groupName);
-			Console.WriteLine($"{initiatorUser} added to group {groupName}");
-		}
-
-		if (_connections.TryGetValue(recipientUser, out var recipientConnectionId))
-		{
-			await Groups.AddToGroupAsync(recipientConnectionId, groupName);
-			Console.WriteLine($"{recipientUser} added to group {groupName}");
-		}
-	}
 
 	private string CreateGroupName(string user1, string user2)
 	{
@@ -68,5 +83,6 @@ public class ChatHub : Hub
 		Array.Sort(users);
 		return $"{users[0]}_{users[1]}_chat";
 	}
+	
 
 }

@@ -47,6 +47,9 @@ export class ChatComponent implements OnInit {
     this.signalrService.showChat(this.currentUser, recipientUser);
     this.recipientUser = recipientUser;
     this.chatId = this.setChatId();
+    this.signalrService.getMessagesForChat(this.chatId).subscribe((messages) => {
+      this.signalrService.messageSubject.next(messages);
+    });
   }
 
   sendMessage() {
@@ -59,7 +62,7 @@ export class ChatComponent implements OnInit {
   createMessage(): Message {
     return{
       chatId: this.chatId,
-      senderId: "2",
+      senderId: this.userObj.id,
       content: this.newMessage,
       timestamp: new Date(),
       senderUsername: this.currentUser,
@@ -70,11 +73,5 @@ export class ChatComponent implements OnInit {
     const users = [this.currentUser, this.recipientUser];
     users.sort();
     return this.chatId = `${users[0]}_${users[1]}_chat`;
-  }
-
-  loadMessages(chatId: string) {
-    this.signalrService.messages$.pipe().subscribe((messages) => {
-      this.messages = messages.filter(message => message.chatId === chatId);
-    });
   }
 }

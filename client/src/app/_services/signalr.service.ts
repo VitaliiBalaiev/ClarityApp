@@ -3,8 +3,7 @@ import * as signalR from "@microsoft/signalr";
 import { Message } from "../_models/message";
 import { BehaviorSubject } from 'rxjs';
 import { HttpClient } from "@angular/common/http";
-import {ChatComponent} from "../chat/chat.component";
-import {Chat} from "../_models/chat";
+import {User} from "../_models/user";
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +11,8 @@ import {Chat} from "../_models/chat";
 export class SignalrService {
   connection: signalR.HubConnection;
   hubApiUrl: string = 'http://localhost:5045/chathub';
-  private userObj = JSON.parse(localStorage.getItem('user'));
-  private messageSubject = new BehaviorSubject<Message[]>([]);
+  private userObj: User = JSON.parse(localStorage.getItem('user'));
+  public messageSubject = new BehaviorSubject<Message[]>([]);
   public messages$ = this.messageSubject.asObservable();
 
   constructor(private http: HttpClient) {
@@ -46,6 +45,11 @@ export class SignalrService {
 
   public showChat(initiatorUser: string, recipientUser: string) {
     this.connection.invoke("ShowChat", initiatorUser, recipientUser)
-      .catch(err => console.error("Error while initializing chat: ", err));
+      .then(() => console.log(`Chat initialized between ${initiatorUser} and ${recipientUser}`))
+      .catch(err => console.error("Error while initializing chat:", err));
+  }
+
+  public getMessagesForChat(chatId: string){
+    return this.http.get<Message[]>(`http://localhost:5045/api/message/${chatId}`);
   }
 }
