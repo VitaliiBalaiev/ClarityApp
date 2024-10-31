@@ -1,11 +1,12 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SignalrService } from '../_services/signalr.service';
+import { SharedResourcesService } from '../_services/shared-resources.service';
+import { UserService } from '../_services/user.service';
 import { Message } from '../_models/message';
+import { User } from '../_models/user';
+import { Subscription } from 'rxjs';
 import { FormsModule } from "@angular/forms";
-import {DatePipe, NgForOf, NgOptimizedImage} from "@angular/common";
-import {User} from "../_models/user";
-import {SearchbarComponent} from "../searchbar/searchbar.component";
-import {SharedResourcesService} from "../_services/shared-resources.service";
+import { NgForOf, NgIf } from "@angular/common";
 
 @Component({
   selector: 'app-chat',
@@ -13,65 +14,103 @@ import {SharedResourcesService} from "../_services/shared-resources.service";
   templateUrl: './chat.component.html',
   imports: [
     FormsModule,
-    NgForOf,
-    DatePipe,
-    NgOptimizedImage,
-    SearchbarComponent
+    NgIf,
+    NgForOf
   ],
   styleUrls: ['./chat.component.css']
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit, OnDestroy {
   public users: User[] = [];
-  public userObj: User = JSON.parse(localStorage.getItem('user'));
-  public currentUser: string = this.userObj.username;
-  public recipientUser: string;
-  public chats: string[] = [];
+  public currentUser!: User;
+  public recipientUser: string = '';
   public messages: Message[] = [];
   public newMessage: string = '';
-  public chatId: string = '';
+  private chatId: string = '';
+  private subscriptions: Subscription = new Subscription();
 
-  constructor(private signalrService: SignalrService, private sharedResourcesService: SharedResourcesService) {}
+  constructor(
+    private signalrService: SignalrService,
+    private sharedResourcesService: SharedResourcesService,
+    private userService: UserService
+  ) {}
 
-  ngOnInit() {
-    this.sharedResourcesService.currentResource.subscribe(users => {
-      this.users = users;
-    })
+  ngOnInit(): void {
+    this.loadCurrentUser();
+    this.initializeSubscriptions();
+  }
 
-    // Subscribe to messages from SignalR, ensuring only messages for the selected chat are loaded
-    this.signalrService.messages$.pipe().subscribe((messages) => {
-      this.messages = messages;
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
+
+  private loadCurrentUser(): void {
+    this.currentUser = this.userService.getCurrentUser();
+    if (!this.currentUser) {
+      console.error('User not found in UserService');
+    }
+  }
+
+  private initializeSubscriptions(): void {
+    this.subscriptions.add(
+      this.sharedResourcesService.currentResource.subscribe({
+        next: users => this.users = users,
+        error: err => console.error('Error fetching users:', err),
+      })
+    );
+
+    this.subscriptions.add(
+      this.signalrService.messages$.subscribe({
+        next: messages => {
+          this.messages = messages;
+        },
+        error: err => console.error('Error fetching messages:', err),
+      })
+    );
+  }
+
+  public openChat(recipient: string): void {
+    this.recipientUser = recipient;
+    this.chatId = this.generateChatId();
+    this.signalrService.openChat(this.currentUser.username, recipient);
+
+    // Load all messages for the chat
+    this.loadChatMessages();
+  }
+
+  private loadChatMessages(): void {
+    this.signalrService.getMessagesForChat(this.chatId).subscribe({
+      next: messages => {
+        this.messages = messages; // Set the loaded messages
+      },
+      error: err => console.error('Error loading chat messages:', err),
     });
   }
 
-  showChat(recipientUser: string) {
-    this.signalrService.showChat(this.currentUser, recipientUser);
-    this.recipientUser = recipientUser;
-    this.chatId = this.setChatId();
-    this.signalrService.getMessagesForChat(this.chatId).subscribe((messages) => {
-      this.signalrService.messageSubject.next(messages);
-    });
-  }
-
-  sendMessage() {
-    if (this.newMessage.trim()) {
-      this.signalrService.sendMessage(this.chatId, this.createMessage());
+  public sendMessage(): void {
+    if (this.isMessageValid(this.newMessage)) {
+      const message = this.createMessage();
+      this.signalrService.sendMessage(this.chatId, message);
+      this.messages.push(message);
       this.newMessage = '';
     }
   }
 
-  createMessage(): Message {
-    return{
-      chatId: this.chatId,
-      senderId: this.userObj.id,
-      content: this.newMessage,
-      timestamp: new Date(),
-      senderUsername: this.currentUser,
-    }
+  private isMessageValid(content: string): boolean {
+    return content.trim().length > 0;
   }
 
-  setChatId(){
-    const users = [this.currentUser, this.recipientUser];
-    users.sort();
-    return this.chatId = `${users[0]}_${users[1]}_chat`;
+  private createMessage(): Message {
+    return {
+      chatId: this.chatId,
+      senderId: this.currentUser.id,
+      content: this.newMessage,
+      timestamp: new Date(),
+      senderUsername: this.currentUser.username,
+    };
+  }
+
+  private generateChatId(): string {
+    const participants = [this.currentUser.username, this.recipientUser].sort();
+    return `${participants[0]}_${participants[1]}_chat`;
   }
 }
