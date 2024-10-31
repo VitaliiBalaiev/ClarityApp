@@ -5,13 +5,13 @@
   <form #registerForm="ngForm" class="register-form" (ngSubmit)="register()"
         autocomplete="off">
     <input
-      name="username"
+      name="username" ngDefaultControl
       [(ngModel)]="model.username"
       type="text"
       placeholder="Username"
       class="register-input">
     <input
-      name="password"
+      name="password" ngDefaultControl
       [(ngModel)]="model.password"
       type="password"
       placeholder="Password"

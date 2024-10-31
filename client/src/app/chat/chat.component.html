@@ -9,7 +9,7 @@
 
   <!-- Main chat area -->
   <div class="chat-area">
-    <div class="chat-name" [(ngModel)]="chatId">
+    <div class="chat-name" [(ngModel)]="chatId" ngDefaultControl>
       <p>{{chatId}}</p>
     </div>
     <div class="message-list">
@@ -19,7 +19,7 @@
     </div>
     <!-- Input bar -->
     <div class="message-input">
-       <input [(ngModel)]="newMessage" placeholder="Type your message..." />
+      <input ngDefaultControl [(ngModel)]="newMessage" placeholder="Type your message..."/>
       <button (click)="sendMessage()">Send</button>
     </div>
   </div>

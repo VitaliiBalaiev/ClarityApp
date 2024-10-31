@@ -6,7 +6,7 @@
   </div>
   <app-searchbar></app-searchbar>
   <div class="username">
-    <p [(ngModel)]="currentUser">{{currentUser.username}}</p>
+    <p [(ngModel)]="currentUser" ngDefaultControl>{{currentUser.username}}</p>
   </div>
   <div class="extra-info">
     <button class="logout-button" (click)="logout()">Log Out</button>

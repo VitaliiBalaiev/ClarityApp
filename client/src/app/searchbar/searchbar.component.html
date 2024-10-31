@@ -1,5 +1,5 @@
 <div class="searchbar">
-  <input type="text" class="input-bar" (input)="onSearch($event)" placeholder="Find user" [(ngModel)]="searchProperty"/>
+  <input type="text" class="input-bar" (input)="onSearch($event)" placeholder="Find user" [(ngModel)]="searchProperty" ngDefaultControl/>
   <button class="search-button" (click)="searchUser()">
     <img src="../assets/icons/search-icon.png" class="button-image" alt="search-icon"/>
   </button>

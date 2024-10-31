@@ -3,13 +3,13 @@
   <form #loginForm="ngForm" class="login-form" (ngSubmit)="login()"
     autocomplete="off">
     <input
-      name="username"
+      name="username" ngDefaultControl
       [(ngModel)]="model.username"
       type="text"
       placeholder="Username"
       class="login-input">
     <input
-      name="password"
+      name="password" ngDefaultControl
       [(ngModel)]="model.password"
       type="password"
       placeholder="Password"
