@@ -60,9 +60,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     this.subscriptions.add(
       this.signalrService.messages$.subscribe({
-        next: messages => {
-          this.messages = messages;
-        },
+        next: messages => this.messages = messages,
         error: err => console.error('Error fetching messages:', err),
       })
     );
@@ -72,25 +70,12 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.recipientUser = recipient;
     this.chatId = this.generateChatId();
     this.signalrService.openChat(this.currentUser.username, recipient);
-
-    // Load all messages for the chat
-    this.loadChatMessages();
-  }
-
-  private loadChatMessages(): void {
-    this.signalrService.getMessagesForChat(this.chatId).subscribe({
-      next: messages => {
-        this.messages = messages; // Set the loaded messages
-      },
-      error: err => console.error('Error loading chat messages:', err),
-    });
   }
 
   public sendMessage(): void {
     if (this.isMessageValid(this.newMessage)) {
       const message = this.createMessage();
       this.signalrService.sendMessage(this.chatId, message);
-      this.messages.push(message);
       this.newMessage = '';
     }
   }

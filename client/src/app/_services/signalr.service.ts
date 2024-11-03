@@ -3,7 +3,7 @@ import * as signalR from "@microsoft/signalr";
 import { Message } from "../_models/message";
 import { BehaviorSubject } from 'rxjs';
 import { HttpClient } from "@angular/common/http";
-import { UserService } from './user.service'; // Import UserService
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,8 +19,7 @@ export class SignalrService {
   }
 
   private initializeConnection(): void {
-    const userObj = this.userService.getCurrentUser(); // Get user data from UserService
-
+    const userObj = this.userService.getCurrentUser();
     if (userObj) {
       this.connection = new signalR.HubConnectionBuilder()
         .withUrl(this.hubApiUrl, {
@@ -30,6 +29,12 @@ export class SignalrService {
 
       this.startConnection();
       this.registerMessageHandler();
+
+      this.connection.onreconnected(() => {
+        console.log("Reconnected to SignalR hub");
+        this.registerMessageHandler();
+      });
+
     } else {
       console.error("User not found for SignalR connection.");
     }
@@ -49,18 +54,31 @@ export class SignalrService {
     });
   }
 
+  public openChat(initiatorUser: string, recipientUser: string): void {
+    this.connection.invoke("ShowChat", initiatorUser, recipientUser)
+      .then(() => {
+        console.log(`Chat initialized between ${initiatorUser} and ${recipientUser}`);
+        this.loadChatMessages(this.generateChatId(initiatorUser, recipientUser)); // Load initial messages
+      })
+      .catch(err => console.error("Error while initializing chat:", err));
+  }
+
+  private loadChatMessages(chatId: string): void {
+    this.http.get<Message[]>(`http://localhost:5045/api/message/${chatId}`).subscribe({
+      next: messages => {
+        this.messageSubject.next(messages); // Set initial messages for the chat
+      },
+      error: err => console.error('Error loading chat messages:', err),
+    });
+  }
+
   public sendMessage(groupName: string, message: Message): void {
     this.connection.invoke("SendMessage", groupName, message)
       .catch(err => console.error("Error while sending message: ", err));
   }
 
-  public openChat(initiatorUser: string, recipientUser: string): void {
-    this.connection.invoke("ShowChat", initiatorUser, recipientUser)
-      .then(() => console.log(`Chat initialized between ${initiatorUser} and ${recipientUser}`))
-      .catch(err => console.error("Error while initializing chat:", err));
-  }
-
-  public getMessagesForChat(chatId: string) {
-    return this.http.get<Message[]>(`http://localhost:5045/api/message/${chatId}`);
+  private generateChatId(user1: string, user2: string): string {
+    const participants = [user1, user2].sort();
+    return `${participants[0]}_${participants[1]}_chat`;
   }
 }

@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators';
 import {User} from "../_models/user";
 import {ReplaySubject} from "rxjs";
 import {Router} from "@angular/router";
+import {UserService} from "./user.service";
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class AccountService {
   baseUrl = 'http://localhost:5045/api/';
   private currentUserSource = new ReplaySubject<User>(1);
   currentUser$ = this.currentUserSource.asObservable();
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router, private userService: UserService) { }
 
   login(model: any){
     return this.http.post(`${this.baseUrl}account/login`, model).pipe(
@@ -22,6 +23,7 @@ export class AccountService {
           localStorage.setItem("user", JSON.stringify(user));
           this.currentUserSource.next(user);
           this.router.navigate(['/main']);
+          this.userService.updateUser(user);
         }
       })
     );
