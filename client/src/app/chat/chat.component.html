@@ -1,7 +1,8 @@
 <div class="chat-container">
   <!-- Sidebar with user list -->
   <div class="chat-list">
-    <h3>Users</h3>
+    <app-searchbar></app-searchbar>
+    <div class="i-wanna-be-your-dog"></div>
     <div *ngFor="let user of users" class="user-card" (click)="openChat(user.username)">
       {{ user.username }}
     </div>
@@ -11,30 +12,35 @@
   <div class="chat-area">
     <!-- Centered message when no recipient is selected -->
     <div *ngIf="!recipientUser" class="center-message">
-      <p>Select a user to start chatting</p>
+      <p>Select a user to start chatting...</p>
     </div>
 
     <!-- Chat content when a recipient is selected -->
     <ng-container *ngIf="recipientUser">
       <div class="chat-header">
-        <h3>Chat with {{ recipientUser }}</h3>
+        <h3>{{ recipientUser }}</h3>
       </div>
 
       <div class="message-list">
-        <div *ngFor="let message of messages" class="message">
-          <strong>{{ message.senderUsername }}:</strong> {{ message.content }}
+        <div
+          *ngFor="let message of messages"
+          class="message"
+          [ngClass]="{'my-message': message.senderUsername === currentUser.username, 'other-message': message.senderUsername !== currentUser.username}"
+        >
+          {{ message.content }}
+          <span class="timestamp">{{message.timestamp | date:'HH:mm':'short' }}</span>
         </div>
       </div>
-
       <!-- Input area -->
       <div class="message-input">
         <input
           [(ngModel)]="newMessage"
           placeholder="Type your message..."
           class="input-field"
+          (keydown.enter)="sendMessage()"
         />
-        <button (click)="sendMessage()" [disabled]="!newMessage.trim()">Send</button>
       </div>
+
     </ng-container>
   </div>
 </div>

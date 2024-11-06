@@ -6,7 +6,9 @@ import { Message } from '../_models/message';
 import { User } from '../_models/user';
 import { Subscription } from 'rxjs';
 import { FormsModule } from "@angular/forms";
-import { NgForOf, NgIf } from "@angular/common";
+import {DatePipe, NgClass, NgForOf, NgIf} from "@angular/common";
+import {SearchbarComponent} from "../searchbar/searchbar.component";
+
 
 @Component({
   selector: 'app-chat',
@@ -15,7 +17,10 @@ import { NgForOf, NgIf } from "@angular/common";
   imports: [
     FormsModule,
     NgIf,
-    NgForOf
+    NgForOf,
+    NgClass,
+    DatePipe,
+    SearchbarComponent
   ],
   styleUrls: ['./chat.component.css']
 })
