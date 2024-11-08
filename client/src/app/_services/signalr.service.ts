@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import {Injectable, OnInit} from "@angular/core";
 import * as signalR from "@microsoft/signalr";
 import { Message } from "../_models/message";
 import { BehaviorSubject } from 'rxjs';
@@ -8,13 +8,17 @@ import { UserService } from './user.service';
 @Injectable({
   providedIn: 'root'
 })
-export class SignalrService {
+export class SignalrService implements OnInit{
   private connection: signalR.HubConnection;
   private hubApiUrl: string = 'http://localhost:5045/chathub';
   private messageSubject = new BehaviorSubject<Message[]>([]);
   public messages$ = this.messageSubject.asObservable();
 
   constructor(private http: HttpClient, private userService: UserService) {
+    this.initializeConnection();
+  }
+
+  ngOnInit(){
     this.initializeConnection();
   }
 
@@ -27,14 +31,8 @@ export class SignalrService {
         })
         .build();
 
-      this.startConnection();
       this.registerMessageHandler();
-
-      this.connection.onreconnected(() => {
-        console.log("Reconnected to SignalR hub");
-        this.registerMessageHandler();
-      });
-
+      this.startConnection();
     } else {
       console.error("User not found for SignalR connection.");
     }
@@ -58,7 +56,7 @@ export class SignalrService {
     this.connection.invoke("ShowChat", initiatorUser, recipientUser)
       .then(() => {
         console.log(`Chat initialized between ${initiatorUser} and ${recipientUser}`);
-        this.loadChatMessages(this.generateChatId(initiatorUser, recipientUser)); // Load initial messages
+        this.loadChatMessages(this.generateChatId(initiatorUser, recipientUser));
       })
       .catch(err => console.error("Error while initializing chat:", err));
   }
@@ -66,7 +64,7 @@ export class SignalrService {
   private loadChatMessages(chatId: string): void {
     this.http.get<Message[]>(`http://localhost:5045/api/message/${chatId}`).subscribe({
       next: messages => {
-        this.messageSubject.next(messages); // Set initial messages for the chat
+        this.messageSubject.next(messages);
       },
       error: err => console.error('Error loading chat messages:', err),
     });

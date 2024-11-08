@@ -8,29 +8,36 @@ using ClarityApp.API.Data;
 using ClarityApp.API.DTOs;
 using ClarityApp.API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace ClarityApp.API.Hubs;
 
 [Authorize]
 public class ChatHub(IMessageService messageService, IChatService chatService) : Hub
 {
-	private static readonly Dictionary<string, string> _connections = new();
-
+	private static readonly Dictionary<string, string> _connection = new();
+	
 	public override Task OnConnectedAsync()
 	{
 		var username = Context.User?.Identity?.Name;
-		if (!_connections.ContainsKey(username))
+		if (!_connection.ContainsKey(username))
 		{
-			_connections.Add(username, Context.ConnectionId);
+			_connection.Add(username, Context.ConnectionId);
 			Console.WriteLine($"{username} is connected. ConnectionId: {Context.ConnectionId}");
 		}
+		else 
+		{
+			_connection[username] = Context.ConnectionId;
+			Console.WriteLine($"{username} is connected with new connectionId: {Context.ConnectionId}");
+		}
+
 		return base.OnConnectedAsync();
 	}
 
 	public override Task OnDisconnectedAsync(Exception? exception)
 	{
 		var username = Context.User?.Identity?.Name;
-		_connections.Remove(username);
+		_connection.Remove(username);
 		return base.OnDisconnectedAsync(exception);
 	}
 	
@@ -49,7 +56,7 @@ public class ChatHub(IMessageService messageService, IChatService chatService) :
             
             await chatService.StoreChatAsync(groupName);
     
-            if (_connections.TryGetValue(initiatorUser, out var initiatorConnectionId))
+            if (_connection.TryGetValue(initiatorUser, out var initiatorConnectionId))
             {
                 await Groups.AddToGroupAsync(initiatorConnectionId, groupName);
                 Console.WriteLine($"{initiatorUser} added to group {groupName}");
@@ -59,7 +66,7 @@ public class ChatHub(IMessageService messageService, IChatService chatService) :
                 Console.WriteLine($"Initiator {initiatorUser} not found in connections.");
             }
     
-            if (_connections.TryGetValue(recipientUser, out var recipientConnectionId))
+            if (_connection.TryGetValue(recipientUser, out var recipientConnectionId))
             {
                 await Groups.AddToGroupAsync(recipientConnectionId, groupName);
                 Console.WriteLine($"{recipientUser} added to group {groupName}");
