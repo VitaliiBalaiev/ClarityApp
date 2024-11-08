@@ -35,6 +35,7 @@ export class AccountService {
   }
   logout(){
     localStorage.removeItem("user");
+    localStorage.removeItem("activeChatUser");
     this.currentUserSource.next(null);
   }
   register(model: any){

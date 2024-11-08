@@ -20,20 +20,14 @@ import {FormsModule} from "@angular/forms";
   styleUrl: './main-page.component.css'
 })
 export class MainPageComponent implements OnInit {
-  currentUser: User | null = null;
-  public foundUsers: User[] = [];
+  currentUser: User | null = null
 
   constructor(private accountService: AccountService, private router: Router) { }
 
   ngOnInit(): void {
-    // Subscribe to the current user observable
     this.accountService.currentUser$.subscribe(user => {
-      this.currentUser = user; // Update current user on login/logout
+      this.currentUser = user;
     });
-  }
-
-  handleSearchResults(users: User[]) {
-    this.foundUsers = users; // Store the found users
   }
 
   logout() {

@@ -36,7 +36,7 @@ public class UsersController : ControllerBase
 		if (username != null)
 		{
 			return await context.Users
-				.Where(u => EF.Functions.Like(u.UserName, username + "%"))
+				.Where(u => EF.Functions.Like(u.UserName, $"%{username}%"))
 				.Select(u => new UserDTO { Username = u.UserName })
 				.ToListAsync();
             
