@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { SignalrService } from '../_services/signalr.service';
 import { SharedResourcesService } from '../_services/shared-resources.service';
 import { UserService } from '../_services/user.service';
@@ -33,6 +33,9 @@ export class ChatComponent implements OnInit, OnDestroy {
   private chatId: string = '';
   private subscriptions: Subscription = new Subscription();
 
+  @ViewChild('messageList') private messageList: ElementRef;
+
+
   constructor(
     private signalrService: SignalrService,
     private sharedResourcesService: SharedResourcesService,
@@ -46,6 +49,10 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
+  }
+
+  ngAfterViewChecked(){
+    this.scrollToBottom();
   }
 
   private loadCurrentUser(): void {
@@ -102,5 +109,13 @@ export class ChatComponent implements OnInit, OnDestroy {
   private generateChatId(): string {
     const participants = [this.currentUser.username, this.recipientUser].sort();
     return `${participants[0]}_${participants[1]}_chat`;
+  }
+
+  private scrollToBottom(){
+    try{
+      this.messageList.nativeElement.scrollTop = this.messageList.nativeElement.scrollHeight;
+    } catch(err){
+      console.error("Failed to scroll message: ", err);
+    }
   }
 }
