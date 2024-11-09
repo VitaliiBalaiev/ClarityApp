@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs';
 import { FormsModule } from "@angular/forms";
 import {DatePipe, NgClass, NgForOf, NgIf} from "@angular/common";
 import {SearchbarComponent} from "../searchbar/searchbar.component";
+import {LocalTimePipe} from "../pipes/localtime.pipe";
 
 
 @Component({
@@ -20,7 +21,8 @@ import {SearchbarComponent} from "../searchbar/searchbar.component";
     NgForOf,
     NgClass,
     DatePipe,
-    SearchbarComponent
+    SearchbarComponent,
+    LocalTimePipe
   ],
   styleUrls: ['./chat.component.css']
 })
@@ -111,11 +113,13 @@ export class ChatComponent implements OnInit, OnDestroy {
     return `${participants[0]}_${participants[1]}_chat`;
   }
 
-  private scrollToBottom(){
-    try{
-      this.messageList.nativeElement.scrollTop = this.messageList.nativeElement.scrollHeight;
-    } catch(err){
-      console.error("Failed to scroll message: ", err);
+  private scrollToBottom(): void {
+    if (this.messageList) {
+      try {
+        this.messageList.nativeElement.scrollTop = this.messageList.nativeElement.scrollHeight;
+      } catch (err) {
+        console.error("Failed to scroll message:", err);
+      }
     }
   }
 }

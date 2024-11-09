@@ -28,7 +28,8 @@
           [ngClass]="{'my-message': message.senderUsername === currentUser.username, 'other-message': message.senderUsername !== currentUser.username}"
         >
           {{ message.content }}
-          <span class="timestamp">{{message.timestamp | date:'HH:mm':'short' }}</span>
+          <span class="timestamp">{{ message.timestamp | localTime: 'HH:mm' }}</span>
+
         </div>
       </div>
       <!-- Input area -->
