@@ -2,9 +2,14 @@
   <!-- Sidebar with user list -->
   <div class="chat-list">
     <app-searchbar></app-searchbar>
-    <div class="i-wanna-be-your-dog"></div>
     <div *ngFor="let user of users" class="user-card" (click)="openChat(user.username)">
       {{ user.username }}
+    </div>
+
+    <div *ngFor="let chat of chats" class="chat-card" (click)="openChat(chat.username)">
+      <div class="chat-card-content">
+        <h4>{{ chat.username }}</h4>
+      </div>
     </div>
   </div>
 

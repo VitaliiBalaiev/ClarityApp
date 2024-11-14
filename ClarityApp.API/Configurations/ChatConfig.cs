@@ -15,10 +15,5 @@ public class ChatConfig : IEntityTypeConfiguration<Chat>
 
         // Properties
         builder.Property(c => c.Id).IsRequired();
-
-        // Define one-to-many relationship with ChatUser (junction table)
-        builder.HasMany(c => c.ChatUsers)     // A chat has many ChatUser entries
-            .WithOne(cu => cu.Chat)           // Each ChatUser has one Chat
-            .HasForeignKey(cu => cu.ChatId);  // FK for Chat
     }
 }

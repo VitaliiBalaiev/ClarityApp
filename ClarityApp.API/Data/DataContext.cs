@@ -13,15 +13,14 @@ public class DataContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<UserMessage> Messages { get; set; }
     public DbSet<Chat> Chats { get; set; }
-    public DbSet<ChatUser> ChatUsers { get; set; }
+    public DbSet<UserChat> UserChats { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new UserConfig());
         modelBuilder.ApplyConfiguration(new ChatConfig());
         modelBuilder.ApplyConfiguration(new UserMessageConfig());
-        modelBuilder.ApplyConfiguration(new ChatUserConfig());
-
+        modelBuilder.ApplyConfiguration(new UserChatConfig());
     }
     
 }

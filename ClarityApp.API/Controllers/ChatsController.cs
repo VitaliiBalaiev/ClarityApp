@@ -1,5 +1,6 @@
 using ClarityApp.API.DTOs;
 using ClarityApp.API.Interfaces;
+using ClarityApp.API.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClarityApp.API.Controllers;
@@ -13,5 +14,12 @@ public class ChatsController(IChatService chatService) : ControllerBase
 	{
 		await chatService.StoreChatAsync(chatId);
 		return Ok();
+	}
+
+	[HttpGet("{username}")]
+	public async Task<IActionResult> GetChats(string username)
+	{
+		var chats = await chatService.GetUserChatsAsync(username);
+		return Ok(chats);
 	}
 }

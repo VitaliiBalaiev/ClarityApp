@@ -12,14 +12,10 @@ public class UserConfig : IEntityTypeConfiguration<User>
 
         // Primary key
         builder.HasKey(u => u.Id);
+        builder.HasIndex(u => u.UserName).IsUnique();
 
         // Properties
         builder.Property(u => u.Id).IsRequired();
         builder.Property(u => u.UserName).IsRequired().HasMaxLength(30);
-
-        // Define one-to-many relationship with ChatUser (junction table)
-        builder.HasMany(u => u.ChatUsers)     // A user has many ChatUser entries
-            .WithOne(cu => cu.User)           // Each ChatUser has one User
-            .HasForeignKey(cu => cu.UserId);  // FK for User
     }
 }

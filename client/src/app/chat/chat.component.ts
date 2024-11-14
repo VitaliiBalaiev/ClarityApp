@@ -9,6 +9,8 @@ import { FormsModule } from "@angular/forms";
 import {DatePipe, NgClass, NgForOf, NgIf} from "@angular/common";
 import {SearchbarComponent} from "../searchbar/searchbar.component";
 import {LocalTimePipe} from "../pipes/localtime.pipe";
+import {Chat} from "../_models/chat";
+import {ChatService} from "../_services/chat.service";
 
 
 @Component({
@@ -32,21 +34,23 @@ export class ChatComponent implements OnInit, OnDestroy {
   public recipientUser: string = '';
   public messages: Message[] = [];
   public newMessage: string = '';
+  public chats: Chat[] = [];
   private chatId: string = '';
   private subscriptions: Subscription = new Subscription();
 
   @ViewChild('messageList') private messageList: ElementRef;
 
-
   constructor(
     private signalrService: SignalrService,
     private sharedResourcesService: SharedResourcesService,
-    private userService: UserService
+    private userService: UserService,
+    private chatService: ChatService
   ) {}
 
   ngOnInit(): void {
     this.loadCurrentUser();
     this.initializeSubscriptions();
+    this.chatService.loadChats(this.currentUser.username);
   }
 
   ngOnDestroy(): void {
@@ -76,6 +80,15 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.signalrService.messages$.subscribe({
         next: messages => this.messages = messages,
         error: err => console.error('Error fetching messages:', err),
+      })
+    );
+
+    this.subscriptions.add(
+      this.chatService.chats$.subscribe({
+        next: chats => {
+          this.chats = chats;
+        },
+        error: err => console.error('Error fetching chats:', err),
       })
     );
   }

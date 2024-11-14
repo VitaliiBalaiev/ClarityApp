@@ -55,6 +55,8 @@ public class ChatHub(IMessageService messageService, IChatService chatService) :
             var groupName = CreateGroupName(initiatorUser, recipientUser);
             
             await chatService.StoreChatAsync(groupName);
+            
+            await chatService.StoreUserChatAsync(initiatorUser, recipientUser, groupName);
     
             if (_connection.TryGetValue(initiatorUser, out var initiatorConnectionId))
             {

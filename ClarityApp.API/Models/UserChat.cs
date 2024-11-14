@@ -1,10 +1,10 @@
 namespace ClarityApp.API.Models;
 
-public class ChatUser
+public class UserChat
 {
 	public string ChatId { get; set; }
 	public Chat Chat { get; set; }
 	
-	public int UserId { get; set; }
+	public string Username { get; set; }
 	public User User { get; set; }
 }

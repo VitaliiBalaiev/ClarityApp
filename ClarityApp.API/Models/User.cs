@@ -10,7 +10,7 @@ public class User
     public byte[] PasswordHash { get; set; }
     public byte[] PasswordSalt { get; set; }
     
-    public ICollection<Chat> Chats { get; }
-    public ICollection<UserMessage> Messages { get; }
-    public ICollection<ChatUser> ChatUsers { get; }
+    public ICollection<Chat> Chats { get; set; }
+    public ICollection<UserMessage> Messages { get; set; }
+    public ICollection<UserChat> UserChats { get; set; }
 }
